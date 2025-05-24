@@ -4,6 +4,8 @@ import useApi from '../hooks/useApi';
 import {RegisterResponse} from '../Types/Types';
 import {showMessage} from 'react-native-flash-message';
 import {useAuthStore} from '../state/store';
+import {Button, Input, Text} from '@ui-kitten/components';
+import {LoadingSpinner} from '../components/LoadingSpinner';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -139,61 +141,54 @@ export default function Register() {
 
   return (
     <View style={styles.container}>
-      {/* <TextInput
-        label="Email ID"
-        mode="outlined"
+      <Input
+        placeholder="Email ID"
         value={email}
-        autoComplete="email"
         onChangeText={handleEmailChange}
-        keyboardType="email-address"
         style={styles.input}
-        error={!!emailError}
-      /> */}
-      {/* {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-      <TextInput
-        label="Full Name"
-        mode="outlined"
+        status={emailError ? 'danger' : 'basic'}
+        autoComplete="email"
+        keyboardType="email-address"
+      />
+      {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+      <Input
+        placeholder="Full Name"
         value={fullName}
         onChangeText={handleFullNameChange}
         style={styles.input}
-        error={!!fullNameError}
+        status={fullNameError ? 'danger' : 'basic'}
       />
       {fullNameError ? (
         <Text style={styles.errorText}>{fullNameError}</Text>
       ) : null}
-      <TextInput
-        label="Password"
-        mode="outlined"
-        secureTextEntry
+      <Input
+        placeholder="Password"
         value={password}
         onChangeText={handlePasswordChange}
         style={styles.input}
-        error={!!passwordError}
+        status={passwordError ? 'danger' : 'basic'}
       />
       {passwordError ? (
         <Text style={styles.errorText}>{passwordError}</Text>
       ) : null}
-      <TextInput
-        label="Re-enter Password"
-        mode="outlined"
+      <Input
+        placeholder="Re-enter Password"
         secureTextEntry
         value={reEnterPassword}
         onChangeText={handleReEnterPasswordChange}
         style={styles.input}
-        error={!!reEnterPasswordError}
+        status={reEnterPasswordError ? 'danger' : 'basic'}
       />
       {reEnterPasswordError ? (
         <Text style={styles.errorText}>{reEnterPasswordError}</Text>
       ) : null}
       <Button
-        mode="contained"
         onPress={handleRegister}
         style={styles.button}
         disabled={isLoading}
-        loading={isLoading}
-      >
-        {isLoading ? "Registering..." : "Register"}
-      </Button> */}
+        accessoryLeft={isLoading ? LoadingSpinner : undefined}>
+        {isLoading ? 'Registering...' : 'Register'}
+      </Button>
     </View>
   );
 }

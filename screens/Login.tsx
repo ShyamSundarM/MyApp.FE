@@ -1,13 +1,21 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Keyboard} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import useApi from '../hooks/useApi';
 import {showMessage} from 'react-native-flash-message';
 import {LoginResponse, RootStackParamList} from '../Types/Types';
 import TokenService from '../helpers/TokenService';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
-import {Input, Text} from '@ui-kitten/components';
+import {Button, Icon, Input, Text} from '@ui-kitten/components';
+import {LoadingSpinner} from '../components/LoadingSpinner';
+import FeatherIcons from 'react-native-vector-icons/Feather';
 
 export default function Login() {
+  const [secureTextEntry, setSecureTextEntry] = React.useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -19,6 +27,20 @@ export default function Login() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
+
+  const toggleSecureEntry = (): void => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  const passwordIcon = (props): React.ReactElement => (
+    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
+      {secureTextEntry ? (
+        <FeatherIcons name="eye-off" size={20} />
+      ) : (
+        <FeatherIcons name="eye" size={20} />
+      )}
+    </TouchableWithoutFeedback>
+  );
 
   const handleLogin = async () => {
     Keyboard.dismiss(); // Dismiss the keyboard when login button is clicked
@@ -102,50 +124,46 @@ export default function Login() {
       <Text style={styles.title}>Login</Text>
 
       <View style={styles.inputContainer}>
-        {/* <TextInput
-          label="Email"
-          value={email}
-          onChangeText={handleEmailChange}
-          style={styles.input}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoComplete="email"
-          error={!!emailError}
-          disabled={isLoading} 
-        /> */}
         <Input
           placeholder="Email ID"
           value={email}
           onChangeText={handleEmailChange}
           keyboardType="email-address"
           autoComplete="email"
+          autoCapitalize="none"
+          autoCorrect={false}
           disabled={isLoading}
+          status={emailError ? 'danger' : 'basic'}
         />
         {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
       </View>
       <View style={styles.inputContainer}>
-        {/* <TextInput
-          label="Password"
+        <Input
+          placeholder="Password"
           value={password}
-          autoComplete="password"
           onChangeText={handlePasswordChange}
-          style={styles.input}
-          secureTextEntry
-          error={!!passwordError}
-          disabled={isLoading} // Disable input when API call is happening
-        /> */}
+          secureTextEntry={secureTextEntry}
+          keyboardType="default"
+          autoComplete="password"
+          autoCapitalize="none"
+          autoCorrect={false}
+          disabled={isLoading}
+          status={passwordError ? 'danger' : 'basic'}
+          accessoryRight={passwordIcon}
+        />
         {passwordError ? (
           <Text style={styles.errorText}>{passwordError}</Text>
         ) : null}
       </View>
-      {/* <Button
-        mode="contained"
-        onPress={handleLogin}
+      <Button
         style={styles.button}
-        disabled={isLoading}
-        loading={isLoading}>
+        appearance="outline"
+        accessoryLeft={isLoading ? LoadingSpinner : undefined}
+        size="medium"
+        onPress={handleLogin}
+        disabled={isLoading}>
         {isLoading ? 'Logging in...' : 'Login'}
-      </Button> */}
+      </Button>
     </View>
   );
 }
